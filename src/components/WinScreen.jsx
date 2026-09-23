@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { buildShareText, shareResult } from '../game/share.js'
 
 const PERFECT = [
   'Flawless flush!',
@@ -26,10 +27,12 @@ function pick(list) {
   return list[Math.floor(Math.random() * list.length)]
 }
 
-export default function WinScreen({ start, moves, optimalMoves, optimalPath, onNewTurd }) {
+export default function WinScreen({ game, moves, par, optimalPath, onNewTurd, onClose }) {
   const [showRoute, setShowRoute] = useState(false)
-  const over = moves - optimalMoves
+  const [shareStatus, setShareStatus] = useState(null)
+  const over = moves - par
   const matchedOptimal = over === 0
+  const isDaily = game.mode === 'daily'
 
   // useMemo so the headline does not change on every re-render (e.g. toggling the route).
   const headline = useMemo(
@@ -41,13 +44,33 @@ export default function WinScreen({ start, moves, optimalMoves, optimalPath, onN
     ? 'You matched the optimal solution!'
     : `${over} move${over === 1 ? '' : 's'} over the optimal solution.`
 
+  async function share() {
+    const text = buildShareText({
+      mode: game.mode,
+      number: game.number,
+      start: game.start,
+      moves,
+      par,
+      hints: game.hints,
+      history: game.history,
+    })
+    const outcome = await shareResult(text)
+    setShareStatus(
+      outcome === 'copied' ? 'Copied to clipboard!' : outcome === 'failed' ? 'Could not share.' : null,
+    )
+  }
+
   return (
     <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="win-title">
       <div className="win-card">
+        <button type="button" className="close-btn" onClick={onClose} aria-label="Close">
+          ×
+        </button>
         <div className="win-emoji" aria-hidden="true">💩</div>
         <h2 id="win-title" className="win-title">{headline}</h2>
         <p className="win-text">
-          You turned <strong>{start}</strong> into <strong>TURD</strong>.
+          {isDaily ? `Turddle #${game.number}. ` : ''}
+          You turned <strong>{game.start}</strong> into <strong>TURD</strong>.
         </p>
 
         <div className="win-stats">
@@ -57,8 +80,14 @@ export default function WinScreen({ start, moves, optimalMoves, optimalPath, onN
           </div>
           <div className="stat">
             <span className="stat-label">Optimal</span>
-            <span className="stat-value">{optimalMoves}</span>
+            <span className="stat-value">{par}</span>
           </div>
+          {game.hints > 0 && (
+            <div className="stat">
+              <span className="stat-label">Hints</span>
+              <span className="stat-value">{game.hints}</span>
+            </div>
+          )}
         </div>
 
         <p className={`win-verdict ${matchedOptimal ? 'win-verdict-perfect' : ''}`}>{verdict}</p>
@@ -70,9 +99,15 @@ export default function WinScreen({ start, moves, optimalMoves, optimalPath, onN
         )}
         {showRoute && <p className="win-route">{optimalPath.join(' → ')}</p>}
 
-        <button type="button" className="btn btn-primary btn-big" onClick={onNewTurd} autoFocus>
-          New Turd
+        <button type="button" className="btn btn-primary btn-big" onClick={share}>
+          Share
         </button>
+        {shareStatus && <p className="share-status" role="status">{shareStatus}</p>}
+
+        <button type="button" className="btn btn-ghost" onClick={onNewTurd}>
+          {isDaily ? 'Play a random Turd' : 'New Turd'}
+        </button>
+        {isDaily && <p className="win-next">Next Turddle at midnight.</p>}
       </div>
     </div>
   )

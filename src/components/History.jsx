@@ -1,4 +1,4 @@
-/** The chain of words so far, newest on the right. Scrolls sideways on narrow screens. */
+/** The chain of words so far, newest last. Wraps onto new lines on narrow screens. */
 export default function History({ words }) {
   return (
     <section className="history" aria-label="Word history">

@@ -213,13 +213,6 @@ body {
 /* History */
 .history {
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.history::-webkit-scrollbar {
-  display: none;
 }
 
 .history-list {
@@ -227,11 +220,11 @@ body {
   margin: 0;
   padding: 2px 4px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  width: max-content;
-  min-width: 100%;
   justify-content: center;
+  gap: 6px;
+  row-gap: 8px;
 }
 
 .history-item {
@@ -462,4 +455,115 @@ body {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* Header controls, mode toggle */
+.header-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+}
+
+.header-row .title {
+  grid-column: 2;
+}
+
+.icon-btn {
+  grid-column: 3;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+.segmented {
+  display: inline-flex;
+  margin: 8px auto 0;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--tile-empty);
+  border: 1px solid var(--tile-border);
+}
+
+.segment {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.segment-active {
+  background: var(--brown);
+  color: var(--tile-ink);
+}
+
+.btn-pill {
+  background: var(--tile-empty);
+  color: var(--ink);
+  border: 1px solid var(--tile-border);
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: var(--tile-empty);
+  color: var(--muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.win-card {
+  position: relative;
+}
+
+.share-status {
+  margin: -4px 0 0;
+  font-size: 0.85rem;
+  color: var(--success);
+  font-weight: 600;
+}
+
+.win-next {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 8px;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.stats-grid .stat-value {
+  font-size: 1.7rem;
 }
