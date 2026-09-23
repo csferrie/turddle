@@ -70,6 +70,13 @@ src/
   never opens on obscure Scrabble fodder. Sexual and slur-adjacent words are kept off the
   opening tile but remain valid moves; scatological ones stay in, on brand.
 
+## Deploying
+
+Pushing to `main` runs `.github/workflows/deploy.yml`, which tests, builds and publishes `dist/`
+to GitHub Pages. One-time setup on GitHub: **Settings → Pages → Source: GitHub Actions**.
+The site lands at `https://<user>.github.io/turddle/`. For a custom domain, remove the
+`PAGES_REPO` env line from the workflow so the base path is `/`.
+
 ## Regenerating the dictionary
 
 ```bash
